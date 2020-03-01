@@ -1,68 +1,60 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Reputech
 
-## Available Scripts
+## Description
 
-In the project directory, you can run:
+This website will compare the tech companies in Chicago based on reported ratings and reviews from different websites. Users can view and filter reviews to see which company fits them the most for various reasons.
 
-### `npm start`
+## User Stories
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### Authentication
+* User can register using OAuth.
+* User can login with created credentials.
+* User will be able to logout.
+* User can update information.
+* User can delete profile.
+***
+#### Website Actions - *(Login and authorization NOT required. Public user access.)*
+* Functional navigation bar:
+	* Home
+	* Minimal search bar without filters in navigation bar.
+	* Reviews
+		* Search bar container will have filters User can select.
+		* User can choose between filters:
+			* Highest/lowest ratings/reviews in:
+				* Overall
+				* Salary
+				* Benefits
+				* Interviews
+			* Number of ratings/reviews
+			* Number of jobs available
+* Companies will be displayed depending on User filter.
+* User can click search and filtered results to display a modal with more company information and provide links if applicable such as company website, job posting, or direct link to review.
+***
+#### Website user interactions - *(User login required and authenticated)*
+* User can add a review a company.
+* User can will be able to edit and update their own created reviews.
+* User can delete their own reviews.
+* User will be able to favorite a company. Favorited companies will show on favorites list.
+* User will have the option to remove an item off the favorite list. 
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### Wireframes
+***
+![Home page](./public/Homepage.png)
+##### Home Page 
+* Users will see the homepage which provides brief description about the functionaly and purpose of the application.
+***
+![Reviews page](./public/Reviews.png)
+##### Reviews Page 
+* Users will be able to view/sort companies based on ratings.
+***
+![Favorites page](./public/Favorites.png)
+##### Favorites Page 
+* Registered users will be able to see companies they marked as a favorite.
+***
+![Company page](./public/CompanyShowPage.png)
+##### Company Page 
+* Once user clicks on a company, it will take them to the company page. User can view reviews in detail. Registered users can add/edit/delete reviews.
+***
+![Profile page](./public/UserProfile.png)
+##### Profile Page 
+* Users can click on registered users profiles. Registered users can edit/update/delete own profile once logged in and authenticated.
