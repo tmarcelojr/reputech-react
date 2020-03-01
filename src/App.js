@@ -11,7 +11,8 @@ export default class App extends Component {
   state = {
     username: '',
     password: '',
-    action: 'login'
+    action: 'login',
+    loggedIn: false
   }
 
 /*
@@ -26,13 +27,16 @@ login = async (loginInfo) => {
     const loginRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/login', {
       credentials: 'include',
       method: 'POST',
-      body: JSON.jsonify(loginInfo),
+      body: JSON.stringify(loginInfo),
       headers: {
-        'Content-Type': 'applications/json'
+        'Content-Type': 'application/json'
       }
     })
     const loginJson = await loginRes.json()
-    console.log(loginJson);
+    console.log('this is our loginJson', loginJson);
+    if(loginRes.status === 200) {
+      this.setState({ loggedIn: true })
+    }
   } catch(err) {
     console.log(err);
   }
