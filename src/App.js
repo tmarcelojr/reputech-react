@@ -11,6 +11,8 @@ export default class App extends Component {
   state = {
     username: '',
     password: '',
+    email: '',
+    aboutMe: '',
     action: 'login',
     loggedIn: false
   }
@@ -42,6 +44,33 @@ login = async (loginInfo) => {
   }
 }
 
+register = async (registerInfo) => {
+    try {
+      const registerRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/register', {
+        credentials: 'include', // Required for cookies
+        method: 'POST',
+        body: JSON.stringify(registerInfo),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      const registerJson = await registerRes.json()
+      console.log('this is our answer', registerJson);
+      if(registerJson.status === 401) {
+        this.setState({
+          registerMessage: registerJson.message
+        })
+      }
+      if(registerRes.status === 201) {
+        this.setState({
+          loggedIn: true
+        })
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
 /*
 =============================
      LOGIN/REGISTER FORM
@@ -63,7 +92,8 @@ login = async (loginInfo) => {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    this.login(this.state)
+    if(this.state.action === 'register') this.register(this.state)
+    else this.login(this.state)
   }
 
   render() {
@@ -126,7 +156,7 @@ login = async (loginInfo) => {
               </div>
               <div className='d-flex justify-content-center form_container modal-body'>
                 <form onSubmit={this.handleSubmit}>
-                  <div className='input-group mb-3'>
+                  <div className='input-group mb-2'>
                     <div className='input-group-append'>
                       <span className='input-group-text'><i className='fas fa-user'></i></span>
                     </div>
@@ -152,6 +182,32 @@ login = async (loginInfo) => {
                       placeholder='password' 
                     />
                   </div>
+
+                  {/* Displays register input fields in modal */}
+                  {
+                    this.state.action === 'register'
+                    ?
+                    <div className='input-group mb-2'>
+                      <div className='input-group-append'>
+                        <span className='input-group-text'><i className='fas fa-key'></i></span>
+                      </div>
+                      <input 
+                        type='text' 
+                        name='email' 
+                        className='form-control input_pass'
+                        onChange={this.onChange}
+                        value={this.state.email} 
+                        placeholder='email' 
+                      />
+                      <input
+                        type='hidden'
+                        name='about_me'
+                        value={this.state.about_me}
+                      />
+                    </div>
+                    : null
+                    }
+
                   <div className='form-group'>
                     <div className='custom-control custom-checkbox'>
                       <input 
@@ -167,7 +223,7 @@ login = async (loginInfo) => {
                       </label>
                     </div>
                   </div>
-                    <div className='d-flex justify-content-center mt-3 login_container'>
+                    <div className='d-flex justify-content-center mt-1 login_container'>
                 <button type='Submit' name='button' className='btn login_btn'>
                   {this.state.action === 'register' ? 'Register' : 'Login'}
                 </button>
@@ -178,9 +234,13 @@ login = async (loginInfo) => {
               {
                 this.state.action === 'register'
                 ?
-                <div className='mt-4'>
+                <div className='mt-2'>
                   <div className='d-flex justify-content-center links'>
-                    <small>Don't have an account? <span className='fake_link'onClick={this.switchForm}> Sign Up</span></small>
+                    <small>
+                      Don't have an account? 
+                      <span className='fake_link'onClick={this.switchForm}> Sign Up
+                      </span>
+                    </small>
                   </div>
                   <div className='d-flex justify-content-center links'>
                     <small>
@@ -189,8 +249,8 @@ login = async (loginInfo) => {
                   </div>
                 </div>
                 :
-                <div className='mt-4'>
-                  <div className='d-flex justify-content-center links'>
+                <div className='mt-1'>
+                  <div id='login_form' className='d-flex justify-content-center links'>
                     <small>Already have an account? <span className='fake_link'onClick={this.switchForm}> Login</span></small>
                   </div>
                 </div>

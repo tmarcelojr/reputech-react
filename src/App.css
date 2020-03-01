@@ -83,6 +83,9 @@
   background-color: #c0392b !important;
 }
 
+#login_form {
+  margin-bottom: 50px;
+}
 
 .fake_link {
   color: blue;
