@@ -7,8 +7,7 @@
 }
 
 #login_container {
-  /*position: absolute;/*/
-  padding: 10%;
+  padding-top: 20%;
   margin: 0 auto;
 }
 
@@ -82,4 +81,10 @@
 
 .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
   background-color: #c0392b !important;
+}
+
+
+.fake_link {
+  color: blue;
+  cursor: pointer;
 }
