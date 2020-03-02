@@ -1,0 +1,14 @@
+.home_page_container {
+	text-align: center;
+}
+
+.home_page_img {
+	width: 100%;
+}
+
+header {
+	font-weight: 700;
+	font-size: 1.5em;
+	color: red;
+	padding: 10pt;
+}

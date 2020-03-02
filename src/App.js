@@ -5,6 +5,11 @@ import {
   Route,
   Link
 } from 'react-router-dom'
+import Home from './Home'
+import { FaUserCircle } from "react-icons/fa"
+import { FaUserCog } from "react-icons/fa"
+import reputech_logo from './images/reputech_logo.png'
+import logo from './images/logo.png'
 import './App.css'
 
 export default class App extends Component {
@@ -14,9 +19,10 @@ export default class App extends Component {
     email: '',
     aboutMe: '',
     action: 'login',
-    loggedIn: false
+    loggedIn: false,
+    loggedInUsername: null
   }
-
+  
 /*
 =============================
             AUTH
@@ -24,7 +30,6 @@ export default class App extends Component {
 */
 
 login = async (loginInfo) => {
-  console.log('we are in login', loginInfo);
   try{
     const loginRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/login', {
       credentials: 'include',
@@ -37,8 +42,12 @@ login = async (loginInfo) => {
     const loginJson = await loginRes.json()
     console.log('this is our loginJson', loginJson);
     if(loginRes.status === 200) {
-      this.setState({ loggedIn: true })
+      this.setState({ 
+        loggedIn: true,
+        loggedInUsername: loginJson.data.username
+      })
     }
+    window.$('#loginModal').modal('toggle')
   } catch(err) {
     console.log(err);
   }
@@ -63,8 +72,10 @@ register = async (registerInfo) => {
       }
       if(registerRes.status === 201) {
         this.setState({
-          loggedIn: true
+          loggedIn: true,
+          loggedInUsername: registerJson.data.username
         })
+        window.$('#loginModal').modal('toggle')
       }
     } catch(err) {
       console.log(err);
@@ -92,8 +103,12 @@ register = async (registerInfo) => {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    if(this.state.action === 'register') this.register(this.state)
-    else this.login(this.state)
+    if(this.state.action === 'register') {
+      this.register(this.state)
+    }
+    else {
+      this.login(this.state)
+    }
   }
 
   render() {
@@ -101,6 +116,9 @@ register = async (registerInfo) => {
       <Router>
         <nav className='navbar navbar-expand-sm navbar-dark fixed-top'>
           <ul className='navbar-nav mr-auto'>
+            <li className='nav-item'>
+              <img id='logo' src={reputech_logo} alt='logo'/>
+            </li>
             <li className='nav-item'>
               <Link className='nav-link' to='/'>Home</Link>
             </li>
@@ -112,27 +130,29 @@ register = async (registerInfo) => {
             </li>
           </ul>
           <ul className='navbar-nav ml-auto'>
-            <li 
-              className='nav-item nav-link' 
-              data-toggle='modal' 
-              data-target='#exampleModal'
-            >
-              Login
+            {
+              this.state.loggedIn === true
+              ?
+              <li className='nav-item username'>
+                <FaUserCog id='user_icon'/>
+                  {this.state.loggedInUsername}
+              </li>
+              :
+              <li 
+                className='nav-item nav-link' 
+                data-toggle='modal' 
+                data-target='#loginModal'
+              >
+                <span className='login'><FaUserCircle id='login_icon'/> Login</span>
             </li>
-            <li className='nav-item'>
-              <Link 
-                className='nav-link'
-                onClick={this.openRegisterModal} 
-                to='/register'>Register
-              </Link>
-            </li>
+            }
           </ul>
         </nav>
 
         {/* LOGIN MODAL */}
         <div 
           className='modal fade' 
-          id='exampleModal' 
+          id='loginModal' 
           tabIndex='-1' 
           role='dialog' 
           aria-labelledby='exampleModalLabel' 
@@ -148,7 +168,7 @@ register = async (registerInfo) => {
               <div className='d-flex justify-content-center'>
                 <div className='brand_logo_container'>
                   <img 
-                    src='https://cdn.freebiesupply.com/logos/large/2x/pinterest-circle-logo-png-transparent.png' 
+                    src={logo} 
                     className='brand_logo' 
                     alt='Logo' 
                   />
@@ -197,7 +217,9 @@ register = async (registerInfo) => {
                         className='form-control input_pass'
                         onChange={this.onChange}
                         value={this.state.email} 
-                        placeholder='email' 
+                        placeholder='email'
+                        required=''
+                        data-verify='email' 
                       />
                       <input
                         type='hidden'
@@ -224,8 +246,16 @@ register = async (registerInfo) => {
                     </div>
                   </div>
                     <div className='d-flex justify-content-center mt-1 login_container'>
-                <button type='Submit' name='button' className='btn login_btn'>
-                  {this.state.action === 'register' ? 'Register' : 'Login'}
+                <button 
+                  type='Submit' 
+                  name='button' 
+                  className='btn login_btn'
+                >
+                  {
+                    this.state.action === 'register' 
+                    ? 'Register' 
+                    : 'Login'
+                  }
                 </button>
                  </div>
                 </form>
@@ -242,7 +272,7 @@ register = async (registerInfo) => {
                       </span>
                     </small>
                   </div>
-                  <div className='d-flex justify-content-center links'>
+                  <div id='login_form' className='d-flex justify-content-center links'>
                     <small>
                       <span className='fake_link'>Forgot your password?</span>
                     </small>
@@ -266,9 +296,6 @@ register = async (registerInfo) => {
         <Route path='/favorites'>
           <Favorites />
         </Route>
-        <Route path='/register'>
-          <Register />
-        </Route>
         <Route path='/'>
           <Home />
         </Route>
@@ -285,12 +312,4 @@ function Reviews() {
 
 function Favorites() {
   return <h2>Favorites page</h2>
-}
-
-function Register() {
-  return <h2>Register page</h2>
-}
-
-function Home() {
-  return <h2>Home page</h2>
 }

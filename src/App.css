@@ -2,12 +2,18 @@
   text-align: center;
 }
 
+#logo {
+  height: 20pt;
+  margin-top: 5pt;
+  margin-right: 10pt;
+}
+
 .navbar {
   background: #264653;
 }
 
 #login_container {
-  padding-top: 20%;
+  padding-top: 15%;
   margin: 0 auto;
 }
 
@@ -84,10 +90,22 @@
 }
 
 #login_form {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
+#login_icon {
+  margin-top: -3px;
+}
+
+.login {
+  cursor: pointer;
+}
 .fake_link {
   color: blue;
   cursor: pointer;
+}
+
+.username {
+  color: white;
+  cursor: default;
 }
