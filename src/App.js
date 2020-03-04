@@ -6,21 +6,49 @@ import {
   Link
 } from 'react-router-dom'
 import Home from './Home'
-import { FaUserCircle } from "react-icons/fa"
-import { FaUserCog } from "react-icons/fa"
+import Reviews from './Reviews'
+import { FaUserCircle } from 'react-icons/fa'
+import { FaUserCog } from 'react-icons/fa'
 import reputech_logo from './images/reputech_logo.png'
 import logo from './images/logo.png'
 import './App.css'
 
 export default class App extends Component {
   state = {
+    // Auth
     username: '',
     password: '',
     email: '',
     aboutMe: '',
     action: 'login',
     loggedIn: false,
-    loggedInUsername: null
+    loggedInUsername: null,
+    // Reviews
+    reviews: []
+  }
+
+
+/*
+=============================
+        USER REVIEWS
+=============================
+*/
+
+createReview = async (reviewToAdd, company_id) => {
+    const createReviewRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews/' + company_id, {
+        credentials: 'include',
+        method: 'POST',
+        body: JSON.stringify(reviewToAdd),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+    })
+    const createReviewJson = await createReviewRes.json()
+    if(createReviewRes.status === 201) {
+      this.setState({
+        reviews:[...this.state.reviews, createReviewJson.data]
+      })
+    }
   }
   
 /*
@@ -304,10 +332,6 @@ register = async (registerInfo) => {
 
     )
   }
-}
-
-function Reviews() {
-  return <h2>Reviews page</h2>
 }
 
 function Favorites() {
