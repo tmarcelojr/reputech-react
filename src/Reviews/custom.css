@@ -3,12 +3,6 @@
 	padding: 20px;
 }
 
-.col-md-1 img {
-	margin-left: 25%;
-	margin-top: 50%;
-	border: 3px solid gray;
-}
-
 .star-ratings {
 	border-top: 1px solid black;
 }
@@ -29,4 +23,47 @@
 
 .no-gutters {
 	box-shadow: 10px 5px 5px lightgray;
+}
+
+.card-title {
+	border: none;
+	text-decoration: none;
+	font-size: 1.5em;
+	margin-bottom: -.01em;
+}
+
+.col-md-1 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.col-md-1 img {
+	margin-left: 25%;
+	border: 3px solid gray;
+}
+
+.review_box {
+	border-top: 1px solid black;
+	width: 100%;
+	text-align: center;
+	margin: 20px;
+}
+
+.review_form {
+	text-align: left;
+	border-bottom: 1px solid black;
+}
+
+.btn-danger {
+	background-color: rgb(255,79,83);
+	margin-bottom: 10px;
+}
+
+#submit_area {
+	text-align: right;
+}
+
+#collapse_button {
+	margin-top: 10px;
 }

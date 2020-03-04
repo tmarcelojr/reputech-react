@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 import Home from './Home'
 import Reviews from './Reviews'
+// import CompanyShowPage from './CompanyShowPage'
 import { FaUserCircle } from 'react-icons/fa'
 import { FaUserCog } from 'react-icons/fa'
 import reputech_logo from './images/reputech_logo.png'
@@ -24,31 +25,8 @@ export default class App extends Component {
     loggedIn: false,
     loggedInUsername: null,
     // Reviews
-    reviews: []
-  }
-
-
-/*
-=============================
-        USER REVIEWS
-=============================
-*/
-
-createReview = async (reviewToAdd, company_id) => {
-    const createReviewRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews/' + company_id, {
-        credentials: 'include',
-        method: 'POST',
-        body: JSON.stringify(reviewToAdd),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-    })
-    const createReviewJson = await createReviewRes.json()
-    if(createReviewRes.status === 201) {
-      this.setState({
-        reviews:[...this.state.reviews, createReviewJson.data]
-      })
-    }
+    reviews: [],
+    idOfReviewToEdit: -1
   }
   
 /*
@@ -57,53 +35,75 @@ createReview = async (reviewToAdd, company_id) => {
 =============================
 */
 
-login = async (loginInfo) => {
-  try{
-    const loginRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/login', {
-      credentials: 'include',
-      method: 'POST',
-      body: JSON.stringify(loginInfo),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    const loginJson = await loginRes.json()
-    console.log('this is our loginJson', loginJson);
-    if(loginRes.status === 200) {
-      this.setState({ 
-        loggedIn: true,
-        loggedInUsername: loginJson.data.username
-      })
-    }
-    window.$('#loginModal').modal('toggle')
-  } catch(err) {
-    console.log(err);
-  }
-}
-
-register = async (registerInfo) => {
-    try {
-      const registerRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/register', {
-        credentials: 'include', // Required for cookies
+  login = async (loginInfo) => {
+    try{
+      const loginRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/login', {
+        credentials: 'include',
         method: 'POST',
-        body: JSON.stringify(registerInfo),
+        body: JSON.stringify(loginInfo),
         headers: {
           'Content-Type': 'application/json'
         }
       })
-      const registerJson = await registerRes.json()
-      console.log('this is our answer', registerJson);
-      if(registerJson.status === 401) {
-        this.setState({
-          registerMessage: registerJson.message
+      const loginJson = await loginRes.json()
+      console.log('this is our loginJson', loginJson);
+      if(loginRes.status === 200) {
+        this.setState({ 
+          loggedIn: true,
+          loggedInUsername: loginJson.data.username
         })
       }
-      if(registerRes.status === 201) {
-        this.setState({
-          loggedIn: true,
-          loggedInUsername: registerJson.data.username
+      window.$('#loginModal').modal('toggle')
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  register = async (registerInfo) => {
+      try {
+        const registerRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/register', {
+          credentials: 'include', // Required for cookies
+          method: 'POST',
+          body: JSON.stringify(registerInfo),
+          headers: {
+            'Content-Type': 'application/json'
+          }
         })
-        window.$('#loginModal').modal('toggle')
+        const registerJson = await registerRes.json()
+        console.log('this is our answer', registerJson);
+        if(registerJson.status === 401) {
+          this.setState({
+            registerMessage: registerJson.message
+          })
+        }
+        if(registerRes.status === 201) {
+          this.setState({
+            loggedIn: true,
+            loggedInUsername: registerJson.data.username
+          })
+          window.$('#loginModal').modal('toggle')
+        }
+      } catch(err) {
+        console.log(err);
+      }
+    }
+
+    logout = async () => {
+    try {
+      const logoutRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/logout', {
+          credentials: 'include',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+      })
+      const logoutJson = await logoutRes.json()
+      console.log(logoutJson);
+      if(logoutRes.status === 200) {
+        this.setState({
+          loggedIn: false,
+          loggedInUsername: null
+        })
       }
     } catch(err) {
       console.log(err);
@@ -139,6 +139,141 @@ register = async (registerInfo) => {
     }
   }
 
+/*
+=============================
+      COMPANY SHOW PAGE
+=============================
+*/
+
+  showCompany = (id) => {
+    console.log('we made it to showCompany funciton');
+    console.log(id);
+  }
+
+/*
+=============================
+        USER REVIEWS
+=============================
+*/
+  getReviews = async () => {
+    console.log('we are in getReviews');
+    try{
+      const getReviewsRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews')
+      const reviewsJson = getReviewsRes.json()
+      console.log(reviewsJson);
+      this.setState({
+        reviews: reviewsJson.data
+      })
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  createReview = async (reviewToAdd, company_id) => {
+    // console.log('review to add', reviewToAdd);
+    console.log('company id', company_id);
+    console.log('type of company id', typeof(company_id));
+    let id = company_id.toString()
+    console.log('this is our id in string', id);
+    console.log(typeof(id));
+
+    try{
+      // console.log("reviewToAdd", reviewToAdd)
+      const reviewToAddJson = JSON.stringify(reviewToAdd)
+      // console.log("reviewToAddJSON", reviewToAddJson)
+      const createReviewRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews/' + id, {
+          credentials: 'include',
+          method: 'POST',
+          body: (reviewToAddJson),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+      })
+      const createReviewJson = await createReviewRes.json()
+      if(createReviewRes.status === 201) {
+        // console.log("createReviewJson:", createReviewJson)
+        let newReviewsState = this.state.reviews
+        newReviewsState.push(createReviewJson.data)
+        console.log('this is our reviews array', newReviewsState);
+      // let newReviewsState = [...this.state.reviews, createReviewJson.data]
+      // this.setState({
+      //   reviews: newReviewsState
+      // })
+        // this.setState({
+        //   reviews: [...this.state.reviews, createReviewJson.data]
+        // })
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  deleteReview = async (id) => {
+      try {
+        const deleteReviewRes = await fetch(process.env.REACT_APP_API_URL + "/api/v1/reviews/" + id, {
+          credentials: 'include',
+          method: 'DELETE'
+        })
+        const deleteReviewJson = await deleteReviewRes.json();
+        if(deleteReviewJson.status === 200) {
+          this.setState({
+            reviews: this.state.reviews.filter(review => review.id !== id) 
+          })        
+        }
+
+        else {
+          throw new Error("Could not delete review.")
+        }
+      } catch(err) {
+        console.error(err)
+      }
+    }
+
+  editReview = async (idOfReviewToEdit) => {
+      this.setState({
+        idOfReviewToEdit: idOfReviewToEdit
+      })
+    }
+
+  updateReview = async (newInfo) => {
+      try {
+        const updateReviewRes = await fetch(process.env.REACT_APP_API_URL + "/api/v1/reviews/" + this.state.idOfReviewToEdit, {
+          credentials: 'include',
+          method: 'PUT',
+          body: JSON.stringify(newInfo),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        const updateReviewJson = await updateReviewRes.json()
+        if(updateReviewRes.status === 200) {
+          const reviews = this.state.reviews
+          const indexOfReviewToUpdate = this.state.reviews.find(review => review.id === this.state.idOfReviewToEdit)
+          reviews[indexOfReviewToUpdate] = updateReviewJson.data
+          this.setState({
+            reviews: reviews
+          })
+          const newReviewsArray = this.state.reviews.map((review) => {
+            if(review.id === this.state.idOfReviewToEdit) {
+              return updateReviewJson.data
+            }
+            else {
+              return review
+            }
+          })
+          this.setState({
+            reviews: newReviewsArray
+          })       
+        }
+        else {
+          throw new Error("Could not edit review.")
+        }
+      } catch(err) {
+        console.log(err);
+      }
+    } 
+
+
   render() {
     return (
       <Router>
@@ -154,7 +289,9 @@ register = async (registerInfo) => {
               <Link className='nav-link' to='/reviews'>Reviews</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/favorites'>Favorites</Link>
+              <Link className='nav-link' to='/favorites'>
+                Favorites
+              </Link>
             </li>
           </ul>
           <ul className='navbar-nav ml-auto'>
@@ -319,7 +456,11 @@ register = async (registerInfo) => {
 
       <Switch>
         <Route path='/reviews'>
-          <Reviews />
+          <Reviews
+            createReview={this.createReview}
+            reviews={this.state.reviews}
+            getReviews={this.getReviews}
+          />
         </Route>
         <Route path='/favorites'>
           <Favorites />
@@ -335,5 +476,18 @@ register = async (registerInfo) => {
 }
 
 function Favorites() {
-  return <h2>Favorites page</h2>
+  return(
+    <div>
+    <h2>Favorites page</h2>
+    <h2>Favorites page</h2>
+    <h2>Favorites page</h2>
+    <h2>Favorites page</h2>
+    <h2>Favorites page</h2>
+    <h2>Favorites page</h2>
+    <h2>Favorites page</h2>
+    <h2>Favorites page</h2>
+    <h2>Favorites page</h2>
+    <h2>Favorites page</h2>
+    </div>
+  )
 }

@@ -1,10 +1,18 @@
 import React, { Component } from 'react'
 
-export default class CompanyShowPage extends {
+export default class CompanyShowPage extends Component {
 	render() {
 		return(
 			<div className='company_page_container'>
-				<header>Company show page</header>
+				<p>Company show page</p>
+				<p>Company show page</p>
+				<p>Company show page</p>
+				<p>Company show page</p>
+				<p>Company show page</p>
+				<p>Company show page</p>
+				<p>Company show page</p>
+				<p>Company show page</p>
+				<p>Company show page</p>
 			</div>
 		)
 	}
