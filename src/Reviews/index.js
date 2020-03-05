@@ -15,7 +15,6 @@ export default class Reviews extends Component {
 	}
 
 	componentDidMount = async () => {
-		console.log("CDM >>>>>");
 		await this.getRatings()
 		await this.getWebsiteData()
 		await this.getCompanyReviews()
@@ -67,25 +66,31 @@ export default class Reviews extends Component {
 	}
 
 	organizeReviews = () => {
-		console.log('!!!!!!!!');
-		console.log('!!!!!!!!');
-		console.log('!!!!!!!!');
-		console.log('!!!!!!!!');
-		// console.log("this.state.userReviews >>> ", this.state.userReviews);
-		// console.log("this.state.userReviews id>>> ", this.state.userReviews[0].id);
+		let companyReviews = []
 		for(let i = 0; i < this.state.websiteData.length; i++) {
-			let companyReviews = this.state.userReviews.filter(review => review.id === this.state.websiteData[i].id)
+			let reviewsForThisCo = []
+			// loop through userReviews array
+			for(let j=0; j<this.state.userReviews.length; j++) {
+				// if the user review id matches the company id
+				if(this.state.userReviews[j].company.id===this.state.websiteData[i].id) {
+					reviewsForThisCo.push(this.state.userReviews[j])
+				}
+			}
+				companyReviews.push(reviewsForThisCo)
+		}
+		this.setState({ organizedReviews: companyReviews })
+	}
 
-			// console.log('this is our review company id', review.company.id);
-			// console.log('this is our website data id', this.state.websiteData[i].id);
-			console.log('this is what is being pushed', companyReviews);
-			this.state.organizedReviews.push(companyReviews)
-	// console.log("companyReviews >>> ", companyReviews);
-	console.log('this is happening inside organizeReviews', this.state.organizedReviews);
+	displayCompanyReviews = () => {
+		for(let i = 0; i < this.state.organizedReviews.length; i++) {
+			for( let j = 0; j < this.state.organizedReviews[i].length; j++) {
+				console.log(this.state.organizedReviews[i][j]);
+			}
 		}
 	}
 
 	showReviews = ()=> {
+		// this.displayCompanyReviews()
 		const reviews = this.state.websiteData.map((company, i) => {
 			return(
 				<div key={i} className='card mb-3'>
@@ -192,9 +197,23 @@ export default class Reviews extends Component {
 									</form>
 					  		</div>
 
+					 		{
+					 			this.state.organizedReviews[i].map((review, j) => 
+					 				<div key={j} >
+										<div id='review-card' className="card border-dark mb-3" style={{maxWidth: "100%"}}>
+										  <div className="card-header">{review.stars}</div>
+										  <div className="card-body text-dark">
+										    <span>
+										    	<h5 className="card-title">{review.title}</h5>
+										    	<small><i>by: {review.creator.username}</i></small>
+										    </span>
+										    <p className="card-text">{review.content}</p>
+										  </div>
+										</div>		
+					 				</div>
+					 			)
+					 		}
 
-					  	{/* THIS IS WHERE WE WANT TO DISPLAY THE USER RATINGS*/}
-	
 					  	</div>
 					  </div> {/* review_box */}
 				  </div>
@@ -203,25 +222,15 @@ export default class Reviews extends Component {
 		})
 		this.setState({
 			showReviews: true,
-			reviewstest:reviews
+			reviews:reviews
 		})
 	}
 
 	render () {
-		// console.log("RENDER in Reviews component STATE", this.state);
-		// console.log('this is our user reviews', this.state.userReviews);
-		// console.log('this is our website data', this.state.websiteData);
-		// console.log('this is our organized reviews', this.state.organizedReviews[0]);
-		// console.log('this is our organized reviews length', this.state.organizedReviews.length);
-		// console.log('this is our organized reviews first company array', this.state.organizedReviews[0]);
-		// console.log('this is our organized reviews first company array and its content', JSON.stringify(this.state.organizedReviews[0]));
-		// console.log('this is our organized reviews first company array and its content', Object.keys(this.state.organizedReviews[0]));
-
+		console.log(this.state.organizedReviews);
 		return(
 			<div className='reviews_container'>
-				{this.state.showReviews ? this.state.reviewstest : null}
-				<button onClick={this.props.getReviews}>click here to get reviews</button>
-				<button onClick={() => this.organizeReviews()}></button>
+				{this.state.showReviews ? this.state.reviews : null}
 			</div>
 		)
 	}

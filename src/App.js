@@ -156,7 +156,6 @@ export default class App extends Component {
 =============================
 */
   getReviews = async () => {
-    console.log('we are in getReviews');
     try{
       const getReviewsRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews')
       const reviewsJson = getReviewsRes.json()
@@ -170,13 +169,7 @@ export default class App extends Component {
   }
 
   createReview = async (reviewToAdd, company_id) => {
-    // console.log('review to add', reviewToAdd);
-    console.log('company id', company_id);
-    console.log('type of company id', typeof(company_id));
     let id = company_id.toString()
-    console.log('this is our id in string', id);
-    console.log(typeof(id));
-
     try{
       // console.log("reviewToAdd", reviewToAdd)
       const reviewToAddJson = JSON.stringify(reviewToAdd)
@@ -191,17 +184,8 @@ export default class App extends Component {
       })
       const createReviewJson = await createReviewRes.json()
       if(createReviewRes.status === 201) {
-        // console.log("createReviewJson:", createReviewJson)
         let newReviewsState = this.state.reviews
         newReviewsState.push(createReviewJson.data)
-        console.log('this is our reviews array', newReviewsState);
-      // let newReviewsState = [...this.state.reviews, createReviewJson.data]
-      // this.setState({
-      //   reviews: newReviewsState
-      // })
-        // this.setState({
-        //   reviews: [...this.state.reviews, createReviewJson.data]
-        // })
       }
     } catch(err) {
       console.log(err);
