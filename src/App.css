@@ -108,4 +108,19 @@
 .username {
   color: white;
   cursor: default;
+  margin-left: 10px;
+}
+
+#user-menu {
+  display: flex;
+  align-items: center;
+}
+
+.fake-button {
+  font-size: 1.5em;
+  color: white;
+  background-color: inherit;
+  border: none;
+  margin: 0;
+  padding: 0;
 }

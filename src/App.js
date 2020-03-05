@@ -7,9 +7,7 @@ import {
 } from 'react-router-dom'
 import Home from './Home'
 import Reviews from './Reviews'
-// import CompanyShowPage from './CompanyShowPage'
 import { FaUserCircle } from 'react-icons/fa'
-import { FaUserCog } from 'react-icons/fa'
 import reputech_logo from './images/reputech_logo.png'
 import logo from './images/logo.png'
 import './App.css'
@@ -23,10 +21,13 @@ export default class App extends Component {
     aboutMe: '',
     action: 'login',
     loggedIn: false,
-    loggedInUsername: null,
     // Reviews
     reviews: [],
     idOfReviewToEdit: -1
+  }
+
+  componentDidMount = () => {
+    this.checkLoginStatus()
   }
   
 /*
@@ -47,6 +48,7 @@ export default class App extends Component {
       })
       const loginJson = await loginRes.json()
       console.log('this is our loginJson', loginJson);
+
       if(loginRes.status === 200) {
         this.setState({ 
           loggedIn: true,
@@ -110,6 +112,31 @@ export default class App extends Component {
     }
   }
 
+  checkLoginStatus = async () => {
+    console.log('we are in checkloginstatus');
+    try{
+      const checkLoginRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/logged_in', {
+          credentials: 'include',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+      })
+      const checkLoginJson = await checkLoginRes.json()
+      if(checkLoginRes.status === 200 ) {
+        this.setState({ 
+          loggedIn: true,
+          loggedInUsername: checkLoginJson.data.username
+        })
+      }
+      else {
+        console.log(checkLoginJson.message);
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
 /*
 =============================
      LOGIN/REGISTER FORM
@@ -139,16 +166,6 @@ export default class App extends Component {
     }
   }
 
-/*
-=============================
-      COMPANY SHOW PAGE
-=============================
-*/
-
-  showCompany = (id) => {
-    console.log('we made it to showCompany funciton');
-    console.log(id);
-  }
 
 /*
 =============================
@@ -184,8 +201,11 @@ export default class App extends Component {
       })
       const createReviewJson = await createReviewRes.json()
       if(createReviewRes.status === 201) {
-        let newReviewsState = this.state.reviews
+        let newReviewsState = []
         newReviewsState.push(createReviewJson.data)
+        this.setState({
+          reviews: newReviewsState
+        })
       }
     } catch(err) {
       console.log(err);
@@ -282,9 +302,26 @@ export default class App extends Component {
             {
               this.state.loggedIn === true
               ?
-              <li className='nav-item username'>
-                <FaUserCog id='user_icon'/>
-                  {this.state.loggedInUsername}
+              <li id='user-menu' className='nav-item'>
+                 <div className='dropdown'>
+                   <button
+                    type='button'
+                    className='dropdown-toggle fake-button'  
+                    data-toggle='dropdown'
+                    aria-haspopup='true'
+                    aria-expanded='false'
+                    id='dropdownMenuButton'
+                  >
+                  </button>
+                  <div 
+                    className='dropdown-menu'
+                    aria-labelledby='dropdownMenuButton'
+                  >
+                    <button className='dropdown-item'>Edit Profile</button>
+                    <button className='dropdown-item' onClick={this.logout}>Logout</button>
+                  </div>
+                 </div>
+                <i className='username' >{this.state.loggedInUsername} </i>
               </li>
               :
               <li 
@@ -450,7 +487,9 @@ export default class App extends Component {
           <Favorites />
         </Route>
         <Route path='/'>
-          <Home />
+          <Home 
+            currentUser={this.checkLoginStatus}
+          />
         </Route>
       </Switch>
     </Router>

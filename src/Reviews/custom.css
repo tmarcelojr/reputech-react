@@ -3,17 +3,13 @@
 	padding: 20px;
 }
 
-.star-ratings {
-	border-top: 1px solid black;
-}
-
 #star_container {
 	display: flex;
 }
 
 #company_rating {
 	margin-top: 8px;
-	margin-left: 10px;
+	margin-right: 10px;
 	font-weight: 700;
 }
 

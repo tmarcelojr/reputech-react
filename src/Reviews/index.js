@@ -11,7 +11,8 @@ export default class Reviews extends Component {
 		toShowPage: false,
 		userReviews: [],
 		organizedReviews: [],
-		review: {}
+		averageUserRatings: [],
+		review: {},
 	}
 
 	componentDidMount = async () => {
@@ -90,8 +91,7 @@ export default class Reviews extends Component {
 	}
 
 	showReviews = ()=> {
-		// this.displayCompanyReviews()
-		const reviews = this.state.websiteData.map((company, i) => {
+		const reviewsContainer = this.state.websiteData.map((company, i) => {
 			return(
 				<div key={i} className='card mb-3'>
 				  <div className='row no-gutters'>
@@ -104,6 +104,7 @@ export default class Reviews extends Component {
 				        	<strong>{company.name}</strong>
 				        </button>
 				        <div id='star_container'>
+					        <h6 id='company_rating'>{Math.round((this.state.averageRatings[i][1]) * 2)/2}</h6>
 					        <StarRatings 
 					        	rating={Math.round((this.state.averageRatings[i][1]) * 2)/2} 
 					        	starRatedColor='orange'
@@ -111,7 +112,6 @@ export default class Reviews extends Component {
 					        	starDimension='20px'
 					        	name='rating'
 					        />
-					        <h6 id='company_rating'>{Math.round((this.state.averageRatings[i][1]) * 2)/2}</h6>
 				        </div>
 				        <p className='card-text'>This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
 				        <p className='card-text'>
@@ -184,11 +184,8 @@ export default class Reviews extends Component {
 
 									  <div id='submit_area'>
 									  	<button className='btn btn-danger'
-
 									  		onClick={(e) => {
-
 									  		e.preventDefault()
-									  		console.log("this state.review: (from reviews component", this.state.review)
 									  		this.props.createReview(this.state.review, company.id)
 									  	}}
 
@@ -201,7 +198,19 @@ export default class Reviews extends Component {
 					 			this.state.organizedReviews[i].map((review, j) => 
 					 				<div key={j} >
 										<div id='review-card' className="card border-dark mb-3" style={{maxWidth: "100%"}}>
-										  <div className="card-header">{review.stars}</div>
+										  <div className="card-header">
+										  	<StarRatings 
+								        	rating={review.stars}
+								        	starRatedColor='crimson'
+								        	numberOfStars={5}
+								        	starDimension='20px'
+								        	name='rating'
+								        />
+								        <div>
+								        	<button>Delete</button>
+								        	}
+								        </div>
+										  </div>
 										  <div className="card-body text-dark">
 										    <span>
 										    	<h5 className="card-title">{review.title}</h5>
@@ -222,15 +231,14 @@ export default class Reviews extends Component {
 		})
 		this.setState({
 			showReviews: true,
-			reviews:reviews
+			reviewsContainer:reviewsContainer
 		})
 	}
 
 	render () {
-		console.log(this.state.organizedReviews);
 		return(
 			<div className='reviews_container'>
-				{this.state.showReviews ? this.state.reviews : null}
+				{this.state.showReviews ? this.state.reviewsContainer : null}
 			</div>
 		)
 	}
