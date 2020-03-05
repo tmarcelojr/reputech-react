@@ -12,7 +12,7 @@ export default class Reviews extends Component {
 		userReviews: [],
 		organizedReviews: [],
 		averageUserRatings: [],
-		review: {},
+		review: {}
 	}
 
 	componentDidMount = async () => {
@@ -80,14 +80,6 @@ export default class Reviews extends Component {
 				companyReviews.push(reviewsForThisCo)
 		}
 		this.setState({ organizedReviews: companyReviews })
-	}
-
-	displayCompanyReviews = () => {
-		for(let i = 0; i < this.state.organizedReviews.length; i++) {
-			for( let j = 0; j < this.state.organizedReviews[i].length; j++) {
-				console.log(this.state.organizedReviews[i][j]);
-			}
-		}
 	}
 
 	showReviews = ()=> {
@@ -207,8 +199,11 @@ export default class Reviews extends Component {
 								        	name='rating'
 								        />
 								        <div>
-								        	<button>Delete</button>
-								        	}
+									        {
+									        	this.props.currentUserId === review.creator.id
+									        	? <button onClick={() => this.props.deleteReview(review.id)}>Delete</button>	
+									        	: <p>you cant delete this</p>
+									        }
 								        </div>
 										  </div>
 										  <div className="card-body text-dark">

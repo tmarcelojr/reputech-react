@@ -21,6 +21,7 @@ export default class App extends Component {
     aboutMe: '',
     action: 'login',
     loggedIn: false,
+    currentUserId: null,
     // Reviews
     reviews: [],
     idOfReviewToEdit: -1
@@ -48,11 +49,11 @@ export default class App extends Component {
       })
       const loginJson = await loginRes.json()
       console.log('this is our loginJson', loginJson);
-
       if(loginRes.status === 200) {
         this.setState({ 
           loggedIn: true,
-          loggedInUsername: loginJson.data.username
+          loggedInUsername: loginJson.data.username,
+          currentUserId: loginJson.data.id
         })
       }
       window.$('#loginModal').modal('toggle')
@@ -81,7 +82,8 @@ export default class App extends Component {
         if(registerRes.status === 201) {
           this.setState({
             loggedIn: true,
-            loggedInUsername: registerJson.data.username
+            loggedInUsername: registerJson.data.username,
+            currentUserId: registerJson.data.id
           })
           window.$('#loginModal').modal('toggle')
         }
@@ -113,7 +115,6 @@ export default class App extends Component {
   }
 
   checkLoginStatus = async () => {
-    console.log('we are in checkloginstatus');
     try{
       const checkLoginRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/logged_in', {
           credentials: 'include',
@@ -126,7 +127,8 @@ export default class App extends Component {
       if(checkLoginRes.status === 200 ) {
         this.setState({ 
           loggedIn: true,
-          loggedInUsername: checkLoginJson.data.username
+          loggedInUsername: checkLoginJson.data.username,
+          currentUserId: checkLoginJson.data.id
         })
       }
       else {
@@ -213,6 +215,7 @@ export default class App extends Component {
   }
 
   deleteReview = async (id) => {
+    console.log('we are in delete review');
       try {
         const deleteReviewRes = await fetch(process.env.REACT_APP_API_URL + "/api/v1/reviews/" + id, {
           credentials: 'include',
@@ -279,6 +282,7 @@ export default class App extends Component {
 
 
   render() {
+    console.log(this.state.currentUserId);
     return (
       <Router>
         <nav className='navbar navbar-expand-sm navbar-dark fixed-top'>
@@ -481,6 +485,8 @@ export default class App extends Component {
             createReview={this.createReview}
             reviews={this.state.reviews}
             getReviews={this.getReviews}
+            deleteReview={this.deleteReview}
+            currentUserId={this.state.currentUserId}
           />
         </Route>
         <Route path='/favorites'>
