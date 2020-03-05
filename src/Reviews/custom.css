@@ -1,13 +1,19 @@
 .reviews_container {
-	margin-top: 10%;
-	padding: 20px;
+	/*margin-top: 10%;*/
+	padding: 10%;
+	/*background-color: red;*/
 }
 
 #star_container {
 	display: flex;
+	display: inline;
 }
 
-#company_rating {
+.star-line {
+	display: flex;
+}
+
+.company_rating {
 	margin-top: 8px;
 	margin-right: 10px;
 	font-weight: 700;
@@ -15,6 +21,8 @@
 
 .card-body {
 	margin: 10px;
+	display: flex;
+	display: inline-block;
 }
 
 .no-gutters {
@@ -67,3 +75,5 @@
 #review-card {
 	text-align: left;
 }
+
+/* STARS RATING CSS */

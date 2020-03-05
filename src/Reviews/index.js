@@ -12,7 +12,7 @@ export default class Reviews extends Component {
 		toShowPage: false,
 		userReviews: [],
 		organizedReviews: [],
-		averageUserRatings: [],
+		companyUserRatings: [],
 		review: {}
 	}
 
@@ -21,6 +21,7 @@ export default class Reviews extends Component {
 		await this.getWebsiteData()
 		await this.getCompanyReviews()
 		await this.organizeReviews()
+		await this.findUserAverageRatings()
 		await this.showReviews()
 	}
 
@@ -91,6 +92,8 @@ export default class Reviews extends Component {
           reviews: reviews
         })
       }
+      window.$('#editModal').modal('toggle')
+      window.location.reload()
     } catch(err) {
       console.log(err);
     }
@@ -119,6 +122,28 @@ export default class Reviews extends Component {
 		this.setState({ organizedReviews: companyReviews })
 	}
 
+	findUserAverageRatings = () => {
+		let companyRatings = []
+		let averages = []
+		for(let i = 0; i < this.state.organizedReviews.length; i++) {
+			let ratingsForCo = []
+			for(let j = 0; j < this.state.organizedReviews[i].length; j++) {
+				ratingsForCo.push(this.state.organizedReviews[i][j].stars)
+			}
+		companyRatings.push(ratingsForCo)
+		}
+		console.log('this is my company ratings', companyRatings);
+		for(let k = 0; k < companyRatings.length; k++) {
+			// Grabbing each array of ratings and using reduce() to sum the totals from left to right. If there are no user ratings we set it to 0 with 'or' condition
+			const sum = companyRatings[k].reduce((a, b) => a + b, 0);
+			const avg = (sum / companyRatings[k].length) || 0;
+			averages.push(avg)
+		}
+		this.setState({
+			companyUserRatings: averages
+		})
+	}
+
 	showReviews = ()=> {
 		const reviewsContainer = this.state.websiteData.map((company, i) => {
 			return(
@@ -133,14 +158,34 @@ export default class Reviews extends Component {
 				        	<strong>{company.name}</strong>
 				        </button>
 				        <div id='star_container'>
-					        <h6 id='company_rating'>{Math.round((this.state.averageRatings[i][1]) * 2)/2}</h6>
-					        <StarRatings 
-					        	rating={Math.round((this.state.averageRatings[i][1]) * 2)/2} 
-					        	starRatedColor='orange'
-					        	numberOfStars={5}
-					        	starDimension='20px'
-					        	name='rating'
-					        />
+				        	<div className='star-line'>
+				        		<div>
+							        <h6 className='company_rating'>{Math.round((this.state.averageRatings[i][1]) * 2)/2}</h6>
+						        </div>
+						        <div>
+							        <StarRatings 
+							        	rating={Math.round((this.state.averageRatings[i][1]) * 2)/2} 
+							        	starRatedColor='orange'
+							        	numberOfStars={5}
+							        	starDimension='20px'
+							        	name='rating'
+							        />
+						        </div>
+					        </div>
+					        <div className='star-line'>
+					        	<div>
+							        <h6 className='company_rating'>{Math.round(this.state.companyUserRatings[i] * 2)/2}</h6>
+						        </div>
+						        <div>
+							        <StarRatings 
+							        	rating={Math.round(this.state.companyUserRatings[i] * 2)/2}
+							        	starRatedColor='crimson'
+							        	numberOfStars={5}
+							        	starDimension='20px'
+							        	name='rating'
+							        />
+						        </div>
+					        </div>
 				        </div>
 				        <p className='card-text'>This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
 				        <p className='card-text'>
@@ -185,6 +230,10 @@ export default class Reviews extends Component {
 									    	value={this.state.review.title}
 									    	onChange={this.handleChange} 
 									    />
+
+									
+
+
 									    <label htmlFor='stars'>Rating:</label>
 									    <input 
 									    	type='text' 
@@ -216,6 +265,7 @@ export default class Reviews extends Component {
 									  		onClick={(e) => {
 									  		e.preventDefault()
 									  		this.props.createReview(this.state.review, company.id)
+
 									  	}}>
 									  		Post Review
 									  	</button>
@@ -224,7 +274,7 @@ export default class Reviews extends Component {
 					  		</div>
 
 					 		{
-					 			this.state.organizedReviews[i].map((review, j) => 
+					 			this.state.organizedReviews[i].map((review, j) =>
 					 				<div key={j} >
 										<div id='review-card' className="card border-dark mb-3" style={{maxWidth: "100%"}}>
 										  <div className="card-header">
@@ -282,7 +332,7 @@ export default class Reviews extends Component {
 	}
 
 	render () {
-		console.log('state id', this.state.review.id);
+		console.log('this is our user state ratings', this.state.companyUserRatings);
 		return(
 			<div className='reviews_container'>
 				<div 
