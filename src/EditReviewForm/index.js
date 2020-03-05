@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 export default class EditReviewForm extends Component {
 	state = {
 		title: '',
-		stars: 0,
+		stars: '',
 		content: '',
 		id: 0
 	}
@@ -18,6 +18,11 @@ export default class EditReviewForm extends Component {
 	handleSubmit = (e) => {
 		e.preventDefault()
 		this.props.updateReview(this.state)
+		this.setState({
+			title: '',
+			stars: '',
+			content: ''
+		})
 	}
 
 	render() {
@@ -25,7 +30,7 @@ export default class EditReviewForm extends Component {
 		return(
 			<div>
 				<h2>Edit Review</h2>
-				<form className='review_form' onSubmit={this.handleSubmit}>
+				<form className='edit_review_form' onSubmit={this.handleSubmit}>
 				  <div className='form-group'>
 				    <label htmlFor='title'>Title:</label>
 				    <input 
@@ -56,7 +61,7 @@ export default class EditReviewForm extends Component {
 				    	type='text'
 				    	id='content' 
 				    	name='content'
-				    	rows='3'
+				    	rows='4'
 				    	placeholder={JSON.stringify(this.props.content)}
 				    	value={this.state.value}
 				    	onChange={this.handleChange}

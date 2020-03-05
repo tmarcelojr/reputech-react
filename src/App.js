@@ -7,7 +7,6 @@ import {
 } from 'react-router-dom'
 import Home from './Home'
 import Reviews from './Reviews'
-import EditReviewForm from './EditReviewForm'
 import { FaUserCircle } from 'react-icons/fa'
 import reputech_logo from './images/reputech_logo.png'
 import logo from './images/logo.png'
@@ -24,8 +23,7 @@ export default class App extends Component {
     loggedIn: false,
     currentUserId: null,
     // Reviews
-    reviews: [],
-    idOfReviewToEdit: -1
+    reviews: []
   }
 
   componentDidMount = () => {
@@ -237,52 +235,6 @@ export default class App extends Component {
       }
     }
 
-  editReview = async (idOfReviewToEdit) => {
-      this.setState({
-        idOfReviewToEdit: idOfReviewToEdit
-      })
-    }
-
-  updateReview = async (newInfo) => {
-    console.log('we are in update review with this info', newInfo);
-      try {
-        const updateReviewRes = await fetch(process.env.REACT_APP_API_URL + "/api/v1/reviews/" + this.state.idOfReviewToEdit, {
-          credentials: 'include',
-          method: 'PUT',
-          body: JSON.stringify(newInfo),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        const updateReviewJson = await updateReviewRes.json()
-        if(updateReviewRes.status === 200) {
-          const reviews = this.state.reviews
-          const indexOfReviewToUpdate = this.state.reviews.find(review => review.id === this.state.idOfReviewToEdit)
-          reviews[indexOfReviewToUpdate] = updateReviewJson.data
-          this.setState({
-            reviews: reviews
-          })
-          const newReviewsArray = this.state.reviews.map((review) => {
-            if(review.id === this.state.idOfReviewToEdit) {
-              return updateReviewJson.data
-            }
-            else {
-              return review
-            }
-          })
-          this.setState({
-            reviews: newReviewsArray
-          })       
-        }
-        else {
-          throw new Error("Could not edit review.")
-        }
-      } catch(err) {
-        console.log(err);
-      }
-    } 
-
-
   render() {
     console.log(this.state.currentUserId);
     return (
@@ -490,9 +442,6 @@ export default class App extends Component {
             deleteReview={this.deleteReview}
             editReview={this.editReview}
             currentUserId={this.state.currentUserId}
-          />
-          <EditReviewForm 
-            updateReview={this.updateReview}
           />
         </Route>
         <Route path='/favorites'>

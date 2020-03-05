@@ -74,26 +74,28 @@ export default class Reviews extends Component {
 	}
 
 	updateReview = async (newInfo) => {
-      try {
-        const updateReviewRes = await fetch(process.env.REACT_APP_API_URL + "/api/v1/reviews/" + newInfo.id, {
-          credentials: 'include',
-          method: 'PUT',
-          body: JSON.stringify(newInfo),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        const updateReviewJson = await updateReviewRes.json()
-        if(updateReviewRes.status === 200) {
-          const reviews = this.state.reviews
-          this.setState({
-            reviews: reviews
-          })
+    try {
+      const updateReviewRes = await fetch(process.env.REACT_APP_API_URL + "/api/v1/reviews/" + newInfo.id, {
+        credentials: 'include',
+        method: 'PUT',
+        body: JSON.stringify(newInfo),
+        headers: {
+          'Content-Type': 'application/json'
         }
-      } catch(err) {
-        console.log(err);
+      })
+      const updateReviewJson = await updateReviewRes.json()
+      console.log('update json', updateReviewJson);
+      if(updateReviewRes.status === 200) {
+        const reviews = this.state.reviews
+        this.setState({
+          reviews: reviews
+        })
       }
-    } 
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
 
 	handleChange = (e) => {
 		let newReviewState = this.state.review
@@ -168,7 +170,7 @@ export default class Reviews extends Component {
 					  	>
 					  		<GoThreeBars />
 					  	</button>
-					  	{/* Added 'a' since it doesn't allow value to start with int/company.id*/}
+					  	
 					  	<div className='collapse' id={'a' + company.id}>
 					  		<div className='well'>
 					  			<form className='review_form'>
@@ -214,9 +216,9 @@ export default class Reviews extends Component {
 									  		onClick={(e) => {
 									  		e.preventDefault()
 									  		this.props.createReview(this.state.review, company.id)
-									  	}}
-
-									  	>Post Review</button>
+									  	}}>
+									  		Post Review
+									  	</button>
 									  </div>
 									</form>
 					  		</div>
@@ -238,7 +240,6 @@ export default class Reviews extends Component {
 									        	this.props.currentUserId === review.creator.id
 									        	?
 									        	<div>
-										        	{this.editReview(review)}
 										        	<button 
 										        		onClick={() => this.props.deleteReview(review.id)}>
 										        			Delete
@@ -269,7 +270,7 @@ export default class Reviews extends Component {
 					 		}
 
 					  	</div>
-					  </div> {/* review_box */}
+					  </div>
 				  </div>
 				</div> /* className='card mb-3' */
 			)
