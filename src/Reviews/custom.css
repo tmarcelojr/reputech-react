@@ -1,7 +1,5 @@
 .reviews_container {
-	/*margin-top: 10%;*/
 	padding: 10%;
-	/*background-color: red;*/
 }
 
 #star_container {
@@ -47,11 +45,40 @@
 	border: 3px solid gray;
 }
 
+.btn-danger {
+	background-color: crimson;
+	margin-bottom: 10px;
+}
+
+#submit_area {
+ 	display: flex;
+ 	flex-direction: row-reverse;
+ 	padding: 10px;
+}
+
+#submit-button {
+	padding-left: 10px;
+}
+
+#collapse_button {
+	margin: 10px 0px;
+	background-color: rgb(45, 70, 82);
+}
+
+
+/* USER REVIEWS */
+
 .review_box {
 	border-top: 1px solid black;
 	width: 100%;
 	text-align: center;
 	margin: 20px;
+	overflow: hidden;
+}
+
+.collapse {
+	height: 400px;
+	overflow: scroll;
 }
 
 .review_form {
@@ -59,21 +86,87 @@
 	border-bottom: 1px solid black;
 }
 
-.btn-danger {
-	background-color: rgb(255,79,83);
-	margin-bottom: 10px;
+#user-review-options {
+	display: flex;
 }
 
-#submit_area {
-	text-align: right;
-}
-
-#collapse_button {
-	margin-top: 10px;
-}
-
-#review-card {
+#review-card-container {
+	display: flex;
 	text-align: left;
 }
 
+#review-card {
+	display: flex;
+	display: inline-block;
+}
+
+.card-header {
+	display: flex;
+	justify-content: space-between;
+}
+
+#delete-button, #edit-button{
+	background: inherit;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+#delete-button {
+	color: red;
+	margin-left: 3px;
+}
+
 /* STARS RATING CSS */
+.rating {
+    float:left;
+}
+
+.rating:not(:checked) > input {
+    position:absolute;
+    clip:rect(0,0,0,0);
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.rating:not(:checked) > label {
+    float:right;
+    width:1em;
+    padding:0 .1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:200%;
+    line-height:1.2;
+    color:#ddd;
+}
+
+.rating:not(:checked) > label:before {
+    content: '★ ';
+}
+
+.rating > input:checked ~ label {
+    color: crimson;
+}
+
+.rating:not(:checked) > label:hover,
+.rating:not(:checked) > label:hover ~ label {
+    color: crimson;
+}
+
+.rating > input:checked + label:hover,
+.rating > input:checked + label:hover ~ label,
+.rating > input:checked ~ label:hover,
+.rating > input:checked ~ label:hover ~ label,
+.rating > label:hover ~ input:checked ~ label {
+    color: crimson;
+    /*text-shadow:1px 1px crimson, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);*/
+}
+
+.rating > label:active {
+    position:relative;
+    top:2px;
+    left:2px;
+}

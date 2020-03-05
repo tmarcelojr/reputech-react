@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import EditReviewForm from '../EditReviewForm'
 import StarRatings from 'react-star-ratings'
-import { GoThreeBars } from 'react-icons/go'
+import { FaCaretDown, FaCaretUp } from 'react-icons/fa'
 import './custom.css'
 
 export default class Reviews extends Component {
@@ -76,7 +76,7 @@ export default class Reviews extends Component {
 
 	updateReview = async (newInfo) => {
     try {
-      const updateReviewRes = await fetch(process.env.REACT_APP_API_URL + "/api/v1/reviews/" + newInfo.id, {
+      const updateReviewRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews/' + newInfo.id, {
         credentials: 'include',
         method: 'PUT',
         body: JSON.stringify(newInfo),
@@ -172,6 +172,7 @@ export default class Reviews extends Component {
 							        />
 						        </div>
 					        </div>
+					        <small><i>Reputech rating:</i></small>
 					        <div className='star-line'>
 					        	<div>
 							        <h6 className='company_rating'>{Math.round(this.state.companyUserRatings[i] * 2)/2}</h6>
@@ -202,6 +203,7 @@ export default class Reviews extends Component {
 				      </div>
 				    </div>
 
+
 				  	{/* User Reviews Container*/}
 					  <div className='review_box'>
 					  	<button
@@ -213,10 +215,14 @@ export default class Reviews extends Component {
 					  		aria-expanded='false' 
 					  		aria-controls={'a' + company.id}
 					  	>
-					  		<GoThreeBars />
+					  		<FaCaretDown />
 					  	</button>
-					  	
+
 					  	<div className='collapse' id={'a' + company.id}>
+					  	{/* Add a review */}
+					  	{
+					  		this.props.loggedIn === true
+					  		?
 					  		<div className='well'>
 					  			<form className='review_form'>
 									  <div className='form-group'>
@@ -228,24 +234,10 @@ export default class Reviews extends Component {
 									    	name='title'
 									    	placeholder='Review titles'
 									    	value={this.state.review.title}
-									    	onChange={this.handleChange} 
-									    />
-
-									
-
-
-									    <label htmlFor='stars'>Rating:</label>
-									    <input 
-									    	type='text' 
-									    	className='form-control' 
-									    	id='stars' 
-									    	name='stars'
-									    	placeholder='Insert Rating'
-									    	value={this.state.review.stars}
-									    	onChange={this.handleChange} 
+									    	onChange={this.handleChange}
+									    	required
 									    />
 									  </div>
-
 									  <div className='form-group'>
 									    <label htmlFor='textarea'>Review:</label>
 									    <input 
@@ -256,28 +248,48 @@ export default class Reviews extends Component {
 									    	rows='3'
 									    	value={this.state.review.content}
 									    	onChange={this.handleChange}
+									    	required
 									    />
 									  </div>
 
 
 									  <div id='submit_area'>
-									  	<button className='btn btn-danger'
-									  		onClick={(e) => {
-									  		e.preventDefault()
-									  		this.props.createReview(this.state.review, company.id)
+											<div id='submit-button'>
+										  	<button className='btn btn-danger'
+										  		onClick={(e) => {
+										  		e.preventDefault()
+										  		this.props.createReview(this.state.review, company.id)
 
-									  	}}>
-									  		Post Review
-									  	</button>
+										  	}}>
+										  		Post Review
+										  	</button>
+									  	</div>
+
+									  	<div className='form-group'>
+										    <div className='rating'>
+											    <input type='radio' id='star5' name='stars' value={5} onChange={this.handleChange} />
+											    <label htmlFor='star5' title='Rocks!'>5 stars</label>
+											    <input type='radio' id='star4' name='stars' value={4} onChange={this.handleChange} />
+											    <label htmlFor='star4' title='Pretty good'>4 stars</label>
+											    <input type='radio' id='star3' name='stars' value={3} onChange={this.handleChange} />
+											    <label htmlFor='star3' title='Meh'>3 stars</label>
+											    <input type='radio' id='star2' name='stars' value={2} onChange={this.handleChange} />
+											    <label htmlFor='star2' title='Kinda bad'>2 stars</label>
+											    <input type='radio' id='star1' name='stars' value={1} onChange={this.handleChange} />
+											    <label htmlFor='star1' title='Sucks big time'>1 star</label>
+												</div>	  
+											</div>
 									  </div>
 									</form>
 					  		</div>
+					  		: null
+					  	}
 
 					 		{
 					 			this.state.organizedReviews[i].map((review, j) =>
-					 				<div key={j} >
-										<div id='review-card' className="card border-dark mb-3" style={{maxWidth: "100%"}}>
-										  <div className="card-header">
+					 				<div key={j} id='review-container'>
+										<div id='review-card-container' className='card border-dark mb-3' style={{maxWidth: '100%'}}>
+										  <div className='card-header'>
 										  	<StarRatings 
 								        	rating={review.stars}
 								        	starRatedColor='crimson'
@@ -285,39 +297,53 @@ export default class Reviews extends Component {
 								        	starDimension='20px'
 								        	name='rating'
 								        />
-								        <div>
+								        <div id='review-card'>
 									        {
 									        	this.props.currentUserId === review.creator.id
 									        	?
-									        	<div>
-										        	<button 
-										        		onClick={() => this.props.deleteReview(review.id)}>
-										        			Delete
-										        	</button>
-										        	<div
+									        	<div id='user-review-options'>
+										        	<button
 										        		id='edit-button'
 										        		data-toggle='modal' 
 	                							data-target='#editModal'
 	                							onClick={() => this.editReview(review)}
 										        	>
-										        			Edit
-										        	</div>
+										        			Edit |
+										        	</button>
+										        	<button 
+										        		onClick={() => this.props.deleteReview(review.id)}
+										        		id='delete-button'
+										        	>
+										        		Delete
+										        	</button>
 									        	</div>
 									        	: null
 									        }
 								        </div>
 										  </div>
-										  <div className="card-body text-dark">
+										  <div className='card-body text-dark'>
 										    <span>
-										    	<h5 className="card-title">{review.title}</h5>
+										    	<h5 className='card-title'>{review.title}</h5>
 										    	<small><i>by: {review.creator.username}</i></small>
 										    </span>
-										    <p className="card-text">{review.content}</p>
+										    <p className='card-text'>{review.content}</p>
 										  </div>
 										</div>		
 					 				</div>
 					 			)
 					 		}
+
+					 		<button
+					  		id='collapse_button'
+					  		className='btn btn-primary' 
+					  		type='button' 
+					  		data-toggle='collapse' 
+					  		data-target={'#a' + company.id} 
+					  		aria-expanded='false' 
+					  		aria-controls={'a' + company.id}
+					  	>
+					  		<FaCaretUp />
+					  	</button>
 
 					  	</div>
 					  </div>

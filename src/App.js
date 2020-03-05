@@ -22,6 +22,7 @@ export default class App extends Component {
     action: 'login',
     loggedIn: false,
     currentUserId: null,
+    message: '',
     // Reviews
     reviews: []
   }
@@ -54,8 +55,14 @@ export default class App extends Component {
           loggedInUsername: loginJson.data.username,
           currentUserId: loginJson.data.id
         })
-      }
       window.$('#loginModal').modal('toggle')
+      }
+      if(loginRes.status !== 200) {
+        console.log('we got an error');
+        this.setState({
+          messsage: loginJson.data.message
+        })
+      }
     } catch(err) {
       console.log(err);
     }
@@ -295,7 +302,7 @@ export default class App extends Component {
 
         {/* LOGIN MODAL */}
         <div 
-          className='modal fade' 
+          className='modal fade needs-validation' 
           id='loginModal' 
           tabIndex='-1' 
           role='dialog' 
@@ -331,8 +338,14 @@ export default class App extends Component {
                       onChange={this.onChange}
                       value={this.state.username}
                       placeholder='username' 
+                      required
                     />
                   </div>
+
+                  <p>
+                    {this.state.message}
+                  </p>
+
                   <div className='input-group mb-2'>
                     <div className='input-group-append'>
                       <span className='input-group-text'><i className='fas fa-key'></i></span>
@@ -343,7 +356,8 @@ export default class App extends Component {
                       className='form-control input_pass'
                       onChange={this.onChange}
                       value={this.state.password} 
-                      placeholder='password' 
+                      placeholder='password'
+                      required
                     />
                   </div>
 
@@ -442,6 +456,7 @@ export default class App extends Component {
             deleteReview={this.deleteReview}
             editReview={this.editReview}
             currentUserId={this.state.currentUserId}
+            loggedIn={this.state.loggedIn}
           />
         </Route>
         <Route path='/favorites'>
