@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 import Home from './Home'
 import Reviews from './Reviews'
+import EditReviewForm from './EditReviewForm'
 import { FaUserCircle } from 'react-icons/fa'
 import reputech_logo from './images/reputech_logo.png'
 import logo from './images/logo.png'
@@ -243,6 +244,7 @@ export default class App extends Component {
     }
 
   updateReview = async (newInfo) => {
+    console.log('we are in update review with this info', newInfo);
       try {
         const updateReviewRes = await fetch(process.env.REACT_APP_API_URL + "/api/v1/reviews/" + this.state.idOfReviewToEdit, {
           credentials: 'include',
@@ -486,7 +488,11 @@ export default class App extends Component {
             reviews={this.state.reviews}
             getReviews={this.getReviews}
             deleteReview={this.deleteReview}
+            editReview={this.editReview}
             currentUserId={this.state.currentUserId}
+          />
+          <EditReviewForm 
+            updateReview={this.updateReview}
           />
         </Route>
         <Route path='/favorites'>

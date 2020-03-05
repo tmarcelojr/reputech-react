@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import EditReviewForm from '../EditReviewForm'
 import StarRatings from 'react-star-ratings'
 import { GoThreeBars } from 'react-icons/go'
 import './custom.css'
@@ -59,6 +60,40 @@ export default class Reviews extends Component {
 			console.log(err);
 		}
 	}
+
+	editReview = (review) => {
+		console.log('we made it in edit review');
+		this.setState({
+			review: {
+				stars: review.stars,
+				title: review.title,
+				content: review.content,
+				id: review.id
+			}
+		})
+	}
+
+	updateReview = async (newInfo) => {
+      try {
+        const updateReviewRes = await fetch(process.env.REACT_APP_API_URL + "/api/v1/reviews/" + newInfo.id, {
+          credentials: 'include',
+          method: 'PUT',
+          body: JSON.stringify(newInfo),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        const updateReviewJson = await updateReviewRes.json()
+        if(updateReviewRes.status === 200) {
+          const reviews = this.state.reviews
+          this.setState({
+            reviews: reviews
+          })
+        }
+      } catch(err) {
+        console.log(err);
+      }
+    } 
 
 	handleChange = (e) => {
 		let newReviewState = this.state.review
@@ -201,8 +236,23 @@ export default class Reviews extends Component {
 								        <div>
 									        {
 									        	this.props.currentUserId === review.creator.id
-									        	? <button onClick={() => this.props.deleteReview(review.id)}>Delete</button>	
-									        	: <p>you cant delete this</p>
+									        	?
+									        	<div>
+										        	{this.editReview(review)}
+										        	<button 
+										        		onClick={() => this.props.deleteReview(review.id)}>
+										        			Delete
+										        	</button>
+										        	<div
+										        		id='edit-button'
+										        		data-toggle='modal' 
+	                							data-target='#editModal'
+	                							onClick={() => this.editReview(review)}
+										        	>
+										        			Edit
+										        	</div>
+									        	</div>
+									        	: null
 									        }
 								        </div>
 										  </div>
@@ -231,8 +281,34 @@ export default class Reviews extends Component {
 	}
 
 	render () {
+		console.log('state id', this.state.review.id);
 		return(
 			<div className='reviews_container'>
+				<div 
+					className='modal fade' 
+	        id='editModal'
+	        tabIndex='-1' 
+	        role='dialog' 
+	        aria-labelledby='editModalLabel' 
+	        aria-hidden='true'
+				>
+					<div 
+            id='edit_container' 
+            className='modal-dialog d-flex justify-content-center' 
+            role='document'
+            data-backdrop='true'
+        	>
+        		<div className='modal-content user_card'>
+							<EditReviewForm
+								stars={this.state.review.stars}
+								title={this.state.review.title}
+								content={this.state.review.content}
+								id={this.state.review.id}
+								updateReview={this.updateReview}
+							/>
+        		</div>
+					</div>
+				</div>
 				{this.state.showReviews ? this.state.reviewsContainer : null}
 			</div>
 		)
