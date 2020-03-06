@@ -54,7 +54,8 @@ export default class App extends Component {
           loggedInUsername: loginJson.data.username,
           currentUserId: loginJson.data.id
         })
-      window.$('#loginModal').modal('toggle')
+      // window.$('#loginModal').modal('toggle')
+      window.location.reload()
       }
       if(loginRes.status === 401) {
         this.setState({
@@ -107,12 +108,14 @@ export default class App extends Component {
           }
       })
       const logoutJson = await logoutRes.json()
+      console.log(logoutJson);
       if(logoutRes.status === 200) {
         this.setState({
           loggedIn: false,
           loggedInUsername: null
         })
       }
+      window.location.reload()
     } catch(err) {
       console.log(err);
     }
@@ -305,8 +308,8 @@ export default class App extends Component {
           role='dialog' 
           aria-labelledby='exampleModalLabel' 
           aria-hidden='true'
-          maxlength='15' 
-          minlength='4' 
+          maxLength='15' 
+          minLength='4' 
           pattern='^[a-zA-Z0-9_.-]*$'
         >
           <div 
@@ -326,7 +329,7 @@ export default class App extends Component {
                 </div>
               </div>
               <div className='d-flex justify-content-center form_container modal-body'>
-                <form onSubmit={this.handleSubmit} className='needs-validation' novalidate>
+                <form onSubmit={this.handleSubmit} className='needs-validation' noValidate>
                   <div className='input-group mb-2'>
                     <div className='input-group-append'>
                       <span className='input-group-text'><i className='fas fa-user'></i></span>
@@ -378,7 +381,6 @@ export default class App extends Component {
                         onChange={this.onChange}
                         value={this.state.email} 
                         placeholder='email'
-                        required=''
                         data-verify='email'
                         pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$'
                         required

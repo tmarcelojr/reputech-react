@@ -42,6 +42,7 @@ export default class EditReviewForm extends Component {
 				    	value={this.state.title}
 				    	onChange={this.handleChange} 
 				    />
+				    
 				    <label htmlFor='stars'>Rating:</label>
 				    <input 
 				    	type='text' 

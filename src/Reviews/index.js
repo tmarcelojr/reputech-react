@@ -13,7 +13,9 @@ export default class Reviews extends Component {
 		userReviews: [],
 		organizedReviews: [],
 		companyUserRatings: [],
-		review: {}
+		review: {
+			stars: [1, 2, 3, 4, 5]
+		}
 	}
 
 	componentDidMount = async () => {
@@ -84,6 +86,7 @@ export default class Reviews extends Component {
         }
       })
       const updateReviewJson = await updateReviewRes.json()
+      console.log('updateReviewJson', updateReviewJson);
       if(updateReviewRes.status === 200) {
         const reviews = this.state.reviews
         this.setState({
@@ -118,6 +121,17 @@ export default class Reviews extends Component {
 				companyReviews.push(reviewsForThisCo)
 		}
 		this.setState({ organizedReviews: companyReviews })
+	}
+
+	createReview = async (review, id) => {
+		await this.props.createReview(review, id)
+		await window.location.reload()
+	}
+
+	deleteReview = async (id) => {
+		console.log(id);
+		await this.props.deleteReview(id)
+		await window.location.reload()
 	}
 
 	findUserAverageRatings = () => {
@@ -254,25 +268,24 @@ export default class Reviews extends Component {
 											<div id='submit-button'>
 										  	<button className='btn btn-danger'
 										  		onClick={(e) => {
-										  		e.preventDefault()
-										  		this.props.createReview(this.state.review, company.id)
-
-										  	}}>
+										  			e.preventDefault()
+										  			this.createReview(this.state.review, company.id)
+										  		}}>
 										  		Post Review
 										  	</button>
 									  	</div>
 
 									  	<div className='form-group'>
 										    <div className='rating'>
-											    <input type='radio' id='star5' name='stars' value={5} onChange={this.handleChange} />
+											    <input type='radio' id='star5' name='stars' value={this.state.review.stars[4]} onChange={this.handleChange} />
 											    <label htmlFor='star5' title='Rocks!'>5 stars</label>
-											    <input type='radio' id='star4' name='stars' value={4} onChange={this.handleChange} />
+											    <input type='radio' id='star4' name='stars' value={this.state.review.stars[3]} onChange={this.handleChange} />
 											    <label htmlFor='star4' title='Pretty good'>4 stars</label>
-											    <input type='radio' id='star3' name='stars' value={3} onChange={this.handleChange} />
+											    <input type='radio' id='star3' name='stars' value={this.state.review.stars[2]} onChange={this.handleChange} />
 											    <label htmlFor='star3' title='Meh'>3 stars</label>
-											    <input type='radio' id='star2' name='stars' value={2} onChange={this.handleChange} />
+											    <input type='radio' id='star2' name='stars' value={this.state.review.stars[1]} onChange={this.handleChange} />
 											    <label htmlFor='star2' title='Kinda bad'>2 stars</label>
-											    <input type='radio' id='star1' name='stars' value={1} onChange={this.handleChange} />
+											    <input type='radio' id='star1' name='stars' value={this.state.review.stars[0]} onChange={this.handleChange} />
 											    <label htmlFor='star1' title='Sucks big time'>1 star</label>
 												</div>	  
 											</div>
@@ -307,8 +320,8 @@ export default class Reviews extends Component {
 										        	>
 										        			Edit |
 										        	</button>
-										        	<button 
-										        		onClick={() => this.props.deleteReview(review.id)}
+										        	<button
+										        		onClick={() => this.deleteReview(review.id)}
 										        		id='delete-button'
 										        	>
 										        		Delete
