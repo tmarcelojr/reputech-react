@@ -63,7 +63,6 @@ export default class Reviews extends Component {
 	}
 
 	editReview = (review) => {
-		console.log('we made it in edit review');
 		this.setState({
 			review: {
 				stars: review.stars,
@@ -85,7 +84,6 @@ export default class Reviews extends Component {
         }
       })
       const updateReviewJson = await updateReviewRes.json()
-      console.log('update json', updateReviewJson);
       if(updateReviewRes.status === 200) {
         const reviews = this.state.reviews
         this.setState({
@@ -132,7 +130,6 @@ export default class Reviews extends Component {
 			}
 		companyRatings.push(ratingsForCo)
 		}
-		console.log('this is my company ratings', companyRatings);
 		for(let k = 0; k < companyRatings.length; k++) {
 			// Grabbing each array of ratings and using reduce() to sum the totals from left to right. If there are no user ratings we set it to 0 with 'or' condition
 			const sum = companyRatings[k].reduce((a, b) => a + b, 0);
@@ -147,10 +144,10 @@ export default class Reviews extends Component {
 	showReviews = ()=> {
 		const reviewsContainer = this.state.websiteData.map((company, i) => {
 			return(
-				<div key={i} className='card mb-3'>
+				<div key={i} className='card mb-5'>
 				  <div className='row no-gutters'>
-				    <div className='col-md-1'>
-				      <img src={company.website_logo} style={{ height: '70px', width: '70px'}} className='card-img' alt='company logo' />
+				    <div id='img-container' className='col-md-2'>
+				      <img src={company.website_logo} style={{ height: '100px', width: '100px'}} className='card-img' alt='company logo' />
 				    </div>
 				    <div className='col-md-8'>
 				      <div className='card-body'>
@@ -358,7 +355,6 @@ export default class Reviews extends Component {
 	}
 
 	render () {
-		console.log('this is our user state ratings', this.state.companyUserRatings);
 		return(
 			<div className='reviews_container'>
 				<div 

@@ -18,7 +18,7 @@
 }
 
 .card-body {
-	margin: 10px;
+	margin-left: 30px;
 	display: flex;
 	display: inline-block;
 }
@@ -40,8 +40,13 @@
 	align-items: center;
 }
 
-.col-md-1 img {
-	margin-left: 25%;
+#img-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.card-img {
 	border: 3px solid gray;
 }
 

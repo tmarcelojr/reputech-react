@@ -21,8 +21,8 @@ export default class App extends Component {
     aboutMe: '',
     action: 'login',
     loggedIn: false,
+    error: false,
     currentUserId: null,
-    message: '',
     // Reviews
     reviews: []
   }
@@ -48,7 +48,6 @@ export default class App extends Component {
         }
       })
       const loginJson = await loginRes.json()
-      console.log('this is our loginJson', loginJson);
       if(loginRes.status === 200) {
         this.setState({ 
           loggedIn: true,
@@ -57,11 +56,12 @@ export default class App extends Component {
         })
       window.$('#loginModal').modal('toggle')
       }
-      if(loginRes.status !== 200) {
-        console.log('we got an error');
+      if(loginRes.status === 401) {
         this.setState({
-          messsage: loginJson.data.message
+          error: true,
+          messsage: loginJson.message
         })
+        this.forceUpdate()
       }
     } catch(err) {
       console.log(err);
@@ -79,7 +79,6 @@ export default class App extends Component {
           }
         })
         const registerJson = await registerRes.json()
-        console.log('this is our answer', registerJson);
         if(registerJson.status === 401) {
           this.setState({
             registerMessage: registerJson.message
@@ -108,7 +107,6 @@ export default class App extends Component {
           }
       })
       const logoutJson = await logoutRes.json()
-      console.log(logoutJson);
       if(logoutRes.status === 200) {
         this.setState({
           loggedIn: false,
@@ -136,9 +134,6 @@ export default class App extends Component {
           loggedInUsername: checkLoginJson.data.username,
           currentUserId: checkLoginJson.data.id
         })
-      }
-      else {
-        console.log(checkLoginJson.message);
       }
     } catch(err) {
       console.log(err);
@@ -184,7 +179,6 @@ export default class App extends Component {
     try{
       const getReviewsRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews')
       const reviewsJson = getReviewsRes.json()
-      console.log(reviewsJson);
       this.setState({
         reviews: reviewsJson.data
       })
@@ -196,9 +190,7 @@ export default class App extends Component {
   createReview = async (reviewToAdd, company_id) => {
     let id = company_id.toString()
     try{
-      // console.log("reviewToAdd", reviewToAdd)
       const reviewToAddJson = JSON.stringify(reviewToAdd)
-      // console.log("reviewToAddJSON", reviewToAddJson)
       const createReviewRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews/' + id, {
           credentials: 'include',
           method: 'POST',
@@ -221,29 +213,27 @@ export default class App extends Component {
   }
 
   deleteReview = async (id) => {
-    console.log('we are in delete review');
-      try {
-        const deleteReviewRes = await fetch(process.env.REACT_APP_API_URL + "/api/v1/reviews/" + id, {
-          credentials: 'include',
-          method: 'DELETE'
-        })
-        const deleteReviewJson = await deleteReviewRes.json();
-        if(deleteReviewJson.status === 200) {
-          this.setState({
-            reviews: this.state.reviews.filter(review => review.id !== id) 
-          })        
-        }
-
-        else {
-          throw new Error("Could not delete review.")
-        }
-      } catch(err) {
-        console.error(err)
+    try {
+      const deleteReviewRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews/' + id, {
+        credentials: 'include',
+        method: 'DELETE'
+      })
+      const deleteReviewJson = await deleteReviewRes.json();
+      if(deleteReviewJson.status === 200) {
+        this.setState({
+          reviews: this.state.reviews.filter(review => review.id !== id) 
+        })        
       }
+
+      else {
+        throw new Error('Could not delete review.')
+      }
+    } catch(err) {
+      console.error(err)
     }
+  }
 
   render() {
-    console.log(this.state.currentUserId);
     return (
       <Router>
         <nav className='navbar navbar-expand-sm navbar-dark fixed-top'>
@@ -257,11 +247,18 @@ export default class App extends Component {
             <li className='nav-item'>
               <Link className='nav-link' to='/reviews'>Reviews</Link>
             </li>
-            <li className='nav-item'>
-              <Link className='nav-link' to='/favorites'>
-                Favorites
-              </Link>
-            </li>
+
+            {
+              this.state.loggedIn === true
+              ?
+              <li className='nav-item'>
+                <Link className='nav-link' to='/favorites'>
+                  Favorites
+                </Link>
+              </li>
+              : null
+            }
+
           </ul>
           <ul className='navbar-nav ml-auto'>
             {
@@ -308,6 +305,9 @@ export default class App extends Component {
           role='dialog' 
           aria-labelledby='exampleModalLabel' 
           aria-hidden='true'
+          maxlength='15' 
+          minlength='4' 
+          pattern='^[a-zA-Z0-9_.-]*$'
         >
           <div 
             id='login_container' 
@@ -326,12 +326,12 @@ export default class App extends Component {
                 </div>
               </div>
               <div className='d-flex justify-content-center form_container modal-body'>
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleSubmit} className='needs-validation' novalidate>
                   <div className='input-group mb-2'>
                     <div className='input-group-append'>
                       <span className='input-group-text'><i className='fas fa-user'></i></span>
                     </div>
-                    <input 
+                    <input
                       type='text' 
                       name='username' 
                       className='form-control input_user' 
@@ -342,9 +342,11 @@ export default class App extends Component {
                     />
                   </div>
 
-                  <p>
-                    {this.state.message}
-                  </p>
+                  {
+                    this.state.error === true
+                    ? <small><i>Username or password is incorrect</i></small>
+                    : null
+                  }
 
                   <div className='input-group mb-2'>
                     <div className='input-group-append'>
@@ -377,7 +379,9 @@ export default class App extends Component {
                         value={this.state.email} 
                         placeholder='email'
                         required=''
-                        data-verify='email' 
+                        data-verify='email'
+                        pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$'
+                        required
                       />
                       <input
                         type='hidden'
@@ -386,41 +390,26 @@ export default class App extends Component {
                       />
                     </div>
                     : null
-                    }
-
-                  <div className='form-group'>
-                    <div className='custom-control custom-checkbox'>
-                      <input 
-                        type='checkbox' 
-                        className='custom-control-input' 
-                        id='customControlInline' 
-                      />
-                      <label 
-                        className='custom-control-label' 
-                        htmlFor='customControlInline'
-                      >
-                        Remember me
-                      </label>
-                    </div>
-                  </div>
-                    <div className='d-flex justify-content-center mt-1 login_container'>
-                <button 
-                  type='Submit' 
-                  name='button' 
-                  className='btn login_btn'
-                >
-                  {
-                    this.state.action === 'register' 
-                    ? 'Register' 
-                    : 'Login'
                   }
-                </button>
-                 </div>
+
+                  <div className='d-flex justify-content-center mt-1 login_container'>
+                    <button 
+                      type='Submit' 
+                      name='button' 
+                      className='btn login_btn'
+                    >
+                      {
+                        this.state.action === 'register' 
+                        ? 'Register' 
+                        : 'Login'
+                      }
+                    </button>
+                  </div>
                 </form>
               </div>
     
               {
-                this.state.action === 'register'
+                this.state.action === 'login'
                 ?
                 <div className='mt-2'>
                   <div className='d-flex justify-content-center links'>
@@ -469,7 +458,6 @@ export default class App extends Component {
         </Route>
       </Switch>
     </Router>
-
     )
   }
 }
@@ -477,15 +465,6 @@ export default class App extends Component {
 function Favorites() {
   return(
     <div>
-    <h2>Favorites page</h2>
-    <h2>Favorites page</h2>
-    <h2>Favorites page</h2>
-    <h2>Favorites page</h2>
-    <h2>Favorites page</h2>
-    <h2>Favorites page</h2>
-    <h2>Favorites page</h2>
-    <h2>Favorites page</h2>
-    <h2>Favorites page</h2>
     <h2>Favorites page</h2>
     </div>
   )
