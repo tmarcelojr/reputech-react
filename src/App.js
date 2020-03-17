@@ -54,7 +54,6 @@ export default class App extends Component {
           loggedInUsername: loginJson.data.username,
           currentUserId: loginJson.data.id
         })
-      // window.$('#loginModal').modal('toggle')
       window.location.reload()
       }
       if(loginRes.status === 401) {

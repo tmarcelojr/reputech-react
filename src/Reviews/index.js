@@ -199,7 +199,7 @@ export default class Reviews extends Component {
 						        </div>
 					        </div>
 				        </div>
-				        <p className='card-text'>This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+				        <p className='card-text'>Company information here.</p>
 				        <p className='card-text'>
 				        <small className='text-muted'>
 				        	<a 
