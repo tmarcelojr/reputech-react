@@ -30,7 +30,7 @@ export default class Reviews extends Component {
 	getRatings = async () => {
 		try{
 			const ratingRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/collected_reviews', {
-				method: 'GET',
+				method: 'OPTIONS',
 				headers: {
 					'Access-Control-Allow-Origin':'*',
 					'Content-Type': 'application/json'
@@ -48,7 +48,7 @@ export default class Reviews extends Component {
 	getWebsiteData = async () => {
 		try{
 			const dataRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/companies', {
-				method: 'GET',
+				method: 'OPTIONS',
 				headers: {
 					'Access-Control-Allow-Origin':'*',
 					'Content-Type': 'application/json'
@@ -67,7 +67,7 @@ export default class Reviews extends Component {
 	getCompanyReviews = async () => {
 		try{
 			const reviewsRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews', {
-				method: 'GET',
+				method: 'OPTIONS',
 				headers: {
 					'Access-Control-Allow-Origin':'*',
 					'Content-Type': 'application/json'
