@@ -35,7 +35,7 @@ export default class Reviews extends Component {
         headers: {
           'Content-Type': 'application/json'
          }
-			}),
+			})
 
 			const ratingJson = await ratingRes.json()
 			this.setState({
