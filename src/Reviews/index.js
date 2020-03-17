@@ -29,13 +29,7 @@ export default class Reviews extends Component {
 
 	getRatings = async () => {
 		try{
-			const ratingRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/collected_reviews', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-         }
-			})
-
+			const ratingRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/collected_reviews')
 			const ratingJson = await ratingRes.json()
 			this.setState({
 				averageRatings: ratingJson.data
@@ -47,13 +41,7 @@ export default class Reviews extends Component {
 
 	getWebsiteData = async () => {
 		try{
-			const dataRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/companies', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-			})
-
+			const dataRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/companies')
 			const dataJson = await dataRes.json()
 
 			this.setState({
@@ -66,14 +54,7 @@ export default class Reviews extends Component {
 
 	getCompanyReviews = async () => {
 		try{
-			const reviewsRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews', {
-				credentials: 'include',
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-			})
-
+			const reviewsRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews')
 			const reviewsJson = await reviewsRes.json()
 			this.setState({
 				userReviews: reviewsJson.data
