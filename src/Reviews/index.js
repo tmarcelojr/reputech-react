@@ -30,7 +30,6 @@ export default class Reviews extends Component {
 	getRatings = async () => {
 		try{
 			const ratingRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/collected_reviews', {
-				credentials: 'include',
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -49,7 +48,6 @@ export default class Reviews extends Component {
 	getWebsiteData = async () => {
 		try{
 			const dataRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/companies', {
-				credentials: 'include',
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
