@@ -30,8 +30,10 @@ export default class Reviews extends Component {
 	getRatings = async () => {
 		try{
 			const ratingRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/collected_reviews', {
+				method: 'GET',
 				headers: {
-					'Access-Control-Allow-Origin':'*'
+					'Access-Control-Allow-Origin':'*',
+					'Content-Type': 'application/json'
 				}
 			})
 			const ratingJson = await ratingRes.json()
@@ -46,11 +48,13 @@ export default class Reviews extends Component {
 	getWebsiteData = async () => {
 		try{
 			const dataRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/companies', {
+				method: 'GET',
 				headers: {
-					'Access-Control-Allow-Origin':'*'
+					'Access-Control-Allow-Origin':'*',
+					'Content-Type': 'application/json'
 				}
 			})
-			const dataJson = await dataRes.json()
+			const dataJson = dataRes.json()
 
 			this.setState({
 				websiteData: dataJson.data
@@ -63,11 +67,13 @@ export default class Reviews extends Component {
 	getCompanyReviews = async () => {
 		try{
 			const reviewsRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/reviews', {
+				method: 'GET',
 				headers: {
-					'Access-Control-Allow-Origin':'*'
+					'Access-Control-Allow-Origin':'*',
+					'Content-Type': 'application/json'
 				}
 			})
-			const reviewsJson = await reviewsRes.json()
+			const reviewsJson = reviewsRes.json()
 			this.setState({
 				userReviews: reviewsJson.data
 			})
@@ -99,7 +105,6 @@ export default class Reviews extends Component {
       })
 
       const updateReviewJson = await updateReviewRes.json()
-      console.log('updateReviewJson', updateReviewJson);
       if(updateReviewRes.status === 200) {
         const reviews = this.state.reviews
         this.setState({
