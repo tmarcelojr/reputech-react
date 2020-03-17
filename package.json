@@ -13,7 +13,9 @@
     "react-icons": "^3.9.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
-    "react-star-ratings": "^2.3.0"
+    "react-star-ratings": "^2.3.0",
+    "node": "12.14.1",
+    "npm": "6.13.7"
   },
   "scripts": {
     "start": "react-scripts start",

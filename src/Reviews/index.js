@@ -34,7 +34,9 @@ export default class Reviews extends Component {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-			})
+         }
+			}),
+
 			const ratingJson = await ratingRes.json()
 			this.setState({
 				averageRatings: ratingJson.data
@@ -51,7 +53,9 @@ export default class Reviews extends Component {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
+        }
 			})
+
 			const dataJson = await dataRes.json()
 
 			this.setState({
@@ -69,7 +73,9 @@ export default class Reviews extends Component {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
+        }
 			})
+
 			const reviewsJson = await reviewsRes.json()
 			this.setState({
 				userReviews: reviewsJson.data
@@ -100,6 +106,7 @@ export default class Reviews extends Component {
           'Content-Type': 'application/json'
         }
       })
+
       const updateReviewJson = await updateReviewRes.json()
       console.log('updateReviewJson', updateReviewJson);
       if(updateReviewRes.status === 200) {
