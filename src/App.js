@@ -39,7 +39,7 @@ export default class App extends Component {
 
   login = async (loginInfo) => {
     try{
-      const loginRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/login', {
+      const loginRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/login/', {
         credentials: 'include',
         method: 'POST',
         body: JSON.stringify(loginInfo),
@@ -70,7 +70,7 @@ export default class App extends Component {
 
   register = async (registerInfo) => {
       try {
-        const registerRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/register', {
+        const registerRes = await fetch(process.env.REACT_APP_API_URL + '/api/v1/users/register/', {
           credentials: 'include', // Required for cookies
           method: 'POST',
           body: JSON.stringify(registerInfo),
